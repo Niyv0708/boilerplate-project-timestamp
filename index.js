@@ -24,7 +24,29 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// 时间戳解析API
+app.get('/api/:date', function (req, res) {
+  const dateString = req.params.date;
+  let dateObj;
 
+  // 处理数字时间戳和自然语言日期两种格式
+  if (/^\d+$/.test(dateString)) {
+    const timestamp = parseInt(dateString);
+    dateObj = new Date(timestamp);
+  } else {
+    dateObj = new Date(dateString);
+  }
+
+  // 验证日期有效性
+  if (isNaN(dateObj.getTime())) {
+    res.json({ error: 'Invalid Date' });
+  } else {
+    res.json({
+      unix: dateObj.getTime(),
+      utc: dateObj.toUTCString()
+    });
+  }
+});
 
 // 启动服务器并监听端口
 const PORT = process.env.PORT || 3000;
