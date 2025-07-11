@@ -25,9 +25,19 @@ app.get("/api/hello", function (req, res) {
 });
 
 // 时间戳解析API
-app.get('/api/:date', function (req, res) {
+app.get('/api/:date?', function (req, res) {
   const dateString = req.params.date;
   let dateObj;
+
+  // 处理空参数情况
+  if (!dateString) {
+    dateObj = new Date();
+    res.json({
+      unix: dateObj.getTime(),
+      utc: dateObj.toUTCString()
+    });
+    return;
+  }
 
   // 处理数字时间戳和自然语言日期两种格式
   if (/^\d+$/.test(dateString)) {
